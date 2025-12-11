@@ -44,4 +44,4 @@ pub async fn get_history(
     let history = service.get_history(query.start_date, query.end_date, limit).await?;
 
     Ok(Json(ApiResponse::success(history)))
-}   
+}
