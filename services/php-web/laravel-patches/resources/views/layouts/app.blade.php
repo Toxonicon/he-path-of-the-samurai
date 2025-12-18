@@ -7,6 +7,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <link rel="stylesheet" href="/assets/animations.css">
+  <link rel="stylesheet" href="/assets/advanced-animations.css">
   <link rel="stylesheet" href="/assets/theme.css">
   <style>
     #map { 
@@ -48,6 +49,11 @@
           <li class="nav-item">
             <a class="nav-link {{ Request::is('astronomy*') ? 'active' : '' }}" href="/astronomy">Astronomy Events</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link {{ Request::is('legacy*') ? 'active' : '' }}" href="/legacy">
+              <i class="bi bi-cpu"></i> Pascal Legacy
+            </a>
+          </li>
         </ul>
       </div>
     </div>
@@ -70,6 +76,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/assets/datatable.js"></script>
   <script src="/assets/ui.js"></script>
   <script src="/assets/charts.js"></script>
 
