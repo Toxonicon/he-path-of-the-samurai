@@ -26,7 +26,19 @@ impl OsdrService {
     pub async fn sync(&self) -> Result<usize, ApiError> {
         let json = self.client.fetch_osdr(&self.osdr_url).await?;
         
-        let items = if let Some(a) = json.as_array() {
+        // NASA OSDR API возвращает объект с ключами dataset_id
+        let items = if let Some(obj) = json.as_object() {
+            // Конвертируем объект { "OSD-1": {...}, "OSD-100": {...} } 
+            // в массив объектов с добавлением поля dataset_id
+            obj.iter().map(|(key, value)| {
+                let mut item = value.clone();
+                // Добавляем dataset_id как ключ
+                if let Some(o) = item.as_object_mut() {
+                    o.insert("dataset_id".to_string(), serde_json::Value::String(key.clone()));
+                }
+                item
+            }).collect::<Vec<_>>()
+        } else if let Some(a) = json.as_array() {
             a.clone()
         } else if let Some(v) = json.get("items").and_then(|x| x.as_array()) {
             v.clone()
