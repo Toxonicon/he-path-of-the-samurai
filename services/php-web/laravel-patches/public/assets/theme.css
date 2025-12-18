@@ -287,6 +287,26 @@
     animation: twinkle 3s infinite;
 }
 
+/* === CHARTS === */
+.chart-container {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+.chart-container:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(102, 126, 234, 0.3);
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15);
+}
+
+canvas {
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
 /* === RESPONSIVE === */
 @media (max-width: 768px) {
     .metric-number {

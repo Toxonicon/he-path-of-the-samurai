@@ -134,12 +134,22 @@ class ISSVisualizer {
                 datasets: [{
                     label: 'Скорость (км/ч)',
                     data: values,
-                    borderColor: '#0d6efd',
-                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                    borderColor: '#ff6b9d',
+                    backgroundColor: (context) => {
+                        const ctx = context.chart.ctx;
+                        const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+                        gradient.addColorStop(0, 'rgba(255, 107, 157, 0.4)');
+                        gradient.addColorStop(1, 'rgba(255, 107, 157, 0.0)');
+                        return gradient;
+                    },
                     tension: 0.4,
                     fill: true,
                     pointRadius: 0,
-                    borderWidth: 2
+                    borderWidth: 3,
+                    pointHoverRadius: 6,
+                    pointHoverBackgroundColor: '#ff6b9d',
+                    pointHoverBorderColor: '#fff',
+                    pointHoverBorderWidth: 2
                 }]
             },
             options: {
@@ -152,7 +162,15 @@ class ISSVisualizer {
                     tooltip: {
                         mode: 'index',
                         intersect: false,
+                        backgroundColor: 'rgba(15, 12, 41, 0.95)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        borderColor: '#667eea',
+                        borderWidth: 1,
+                        padding: 12,
+                        displayColors: false,
                         callbacks: {
+                            title: (items) => items[0].label,
                             label: (context) => `${this.formatNumber(context.parsed.y)} км/ч`
                         }
                     }
@@ -160,12 +178,23 @@ class ISSVisualizer {
                 scales: {
                     y: {
                         beginAtZero: false,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)',
+                            drawBorder: false
+                        },
                         ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            font: { size: 10 },
                             callback: (value) => this.formatNumber(value)
                         }
                     },
                     x: {
+                        grid: {
+                            display: false
+                        },
                         ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            font: { size: 10 },
                             maxTicksLimit: 6
                         }
                     }
@@ -197,12 +226,22 @@ class ISSVisualizer {
                 datasets: [{
                     label: 'Высота (км)',
                     data: values,
-                    borderColor: '#198754',
-                    backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                    borderColor: '#4facfe',
+                    backgroundColor: (context) => {
+                        const ctx = context.chart.ctx;
+                        const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+                        gradient.addColorStop(0, 'rgba(79, 172, 254, 0.4)');
+                        gradient.addColorStop(1, 'rgba(79, 172, 254, 0.0)');
+                        return gradient;
+                    },
                     tension: 0.4,
                     fill: true,
                     pointRadius: 0,
-                    borderWidth: 2
+                    borderWidth: 3,
+                    pointHoverRadius: 6,
+                    pointHoverBackgroundColor: '#4facfe',
+                    pointHoverBorderColor: '#fff',
+                    pointHoverBorderWidth: 2
                 }]
             },
             options: {
@@ -215,7 +254,15 @@ class ISSVisualizer {
                     tooltip: {
                         mode: 'index',
                         intersect: false,
+                        backgroundColor: 'rgba(15, 12, 41, 0.95)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        borderColor: '#667eea',
+                        borderWidth: 1,
+                        padding: 12,
+                        displayColors: false,
                         callbacks: {
+                            title: (items) => items[0].label,
                             label: (context) => `${this.formatNumber(context.parsed.y)} км`
                         }
                     }
@@ -223,15 +270,31 @@ class ISSVisualizer {
                 scales: {
                     y: {
                         beginAtZero: false,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)',
+                            drawBorder: false
+                        },
                         ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            font: { size: 10 },
                             callback: (value) => this.formatNumber(value)
                         }
                     },
                     x: {
+                        grid: {
+                            display: false
+                        },
                         ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            font: { size: 10 },
                             maxTicksLimit: 6
                         }
                     }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
                 }
             }
         });
@@ -393,16 +456,49 @@ class OSDRVisualizer {
                     datasets: [{
                         data: Object.values(types),
                         backgroundColor: [
-                            '#0d6efd', '#198754', '#ffc107', 
-                            '#dc3545', '#6f42c1', '#fd7e14'
-                        ]
+                            '#667eea', '#764ba2', '#f093fb', 
+                            '#4facfe', '#00f2fe', '#43e97b',
+                            '#fa709a', '#fee140'
+                        ],
+                        borderWidth: 0,
+                        hoverBorderColor: '#fff',
+                        hoverBorderWidth: 3
                     }]
                 },
                 options: {
                     responsive: true,
+                    cutout: '60%',
                     plugins: {
                         legend: {
-                            position: 'bottom'
+                            position: 'bottom',
+                            labels: {
+                                color: 'rgba(255, 255, 255, 0.9)',
+                                padding: 15,
+                                font: {
+                                    size: 12,
+                                    weight: '500'
+                                },
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 12, 41, 0.95)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: '#667eea',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: true,
+                            callbacks: {
+                                label: (context) => {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
                         }
                     }
                 }
