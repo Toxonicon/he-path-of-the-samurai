@@ -1,15 +1,15 @@
 # Build stage
-FROM rust:slim AS build
+FROM rust:1.75-slim AS build
 RUN apt-get update && apt-get install -y --no-install-recommends pkg-config libssl-dev ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 # кэш зависимостей
-COPY Cargo.toml ./
-RUN mkdir -p src && printf 'fn main() {}' > src/main.rs && cargo fetch
+COPY Cargo.toml Cargo.lock ./
+RUN mkdir -p src && printf 'fn main() {}' > src/main.rs && cargo build --release && rm -rf src
 
 # исходники и сборка
 COPY src ./src
-RUN cargo build --release
+RUN touch src/main.rs && cargo build --release
 
 # Runtime stage
 FROM debian:12-slim

@@ -5,6 +5,7 @@ volumes:
   pgdata:
   appdata:
   csvdata:
+  redis_data:
 
 services:
   db:
@@ -27,18 +28,44 @@ services:
     ports:
       - "5432:5432"
 
+  redis:
+    image: redis:7-alpine
+    container_name: iss_redis
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    volumes:
+      - redis_data:/data
+    networks:
+      - backend
+    ports:
+      - "6379:6379"
+
   rust_iss:
     build:
       context: ./services/rust-iss
     container_name: rust_iss
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgres://monouser:monopass@db:5432/monolith}
-      NASA_API_URL: ${NASA_API_URL:-}
-      NASA_API_KEY: ${NASA_API_KEY:-}
-      FETCH_EVERY_SECONDS: ${FETCH_EVERY_SECONDS:-600}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      NASA_API_URL: ${NASA_API_URL:-https://visualization.osdr.nasa.gov/biodata/api/v2/datasets/?format=json}
+      NASA_API_KEY: ${NASA_API_KEY:-DEMO_KEY}
       WHERE_ISS_URL: ${WHERE_ISS_URL:-https://api.wheretheiss.at/v1/satellites/25544}
+      FETCH_EVERY_SECONDS: ${FETCH_EVERY_SECONDS:-600}
+      ISS_EVERY_SECONDS: ${ISS_EVERY_SECONDS:-120}
+      APOD_EVERY_SECONDS: ${APOD_EVERY_SECONDS:-43200}
+      NEO_EVERY_SECONDS: ${NEO_EVERY_SECONDS:-7200}
+      DONKI_EVERY_SECONDS: ${DONKI_EVERY_SECONDS:-3600}
+      SPACEX_EVERY_SECONDS: ${SPACEX_EVERY_SECONDS:-3600}
+      RATE_LIMIT_PER_SEC: ${RATE_LIMIT_PER_SEC:-100}
+      RUST_LOG: ${RUST_LOG:-info}
     depends_on:
       db:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     networks:
       - backend
@@ -89,18 +116,20 @@ services:
     ports:
       - "8080:80"
 
-  pascal_legacy:
+  rust_legacy:
     build:
-      context: ./services/pascal-legacy
-    container_name: pascal_legacy
+      context: ./services/rust-legacy
+    container_name: rust_legacy
     environment:
       CSV_OUT_DIR: /data/csv
-      GEN_PERIOD_SEC: ${PAS_LEGACY_PERIOD:-300}
+      GEN_PERIOD_SEC: ${LEGACY_PERIOD:-300}
+      DATABASE_URL: postgres://monouser:monopass@db:5432/monolith
       PGHOST: db
       PGPORT: 5432
       PGUSER: monouser
       PGPASSWORD: monopass
       PGDATABASE: monolith
+      RUST_LOG: ${RUST_LOG:-info}
     depends_on:
       db:
         condition: service_healthy
