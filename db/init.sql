@@ -9,9 +9,14 @@ CREATE TABLE IF NOT EXISTS iss_fetch_log (
 
 CREATE TABLE IF NOT EXISTS telemetry_legacy (
     id BIGSERIAL PRIMARY KEY,
-    recorded_at TIMESTAMPTZ NOT NULL,
+    timestamp TIMESTAMPTZ NOT NULL,
+    sensor_name TEXT NOT NULL,
     voltage NUMERIC(6,2) NOT NULL,
-    temp NUMERIC(6,2) NOT NULL,
+    temperature NUMERIC(6,2) NOT NULL,
+    pressure NUMERIC(7,2) NOT NULL,
+    is_online BOOLEAN NOT NULL,
+    is_calibrated BOOLEAN NOT NULL,
+    status TEXT NOT NULL,
     source_file TEXT NOT NULL
 );
 

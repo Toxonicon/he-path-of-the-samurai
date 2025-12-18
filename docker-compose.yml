@@ -86,6 +86,8 @@ services:
       APP_ENV: local
       APP_DEBUG: "true"
       APP_URL: http://localhost:8080
+      SESSION_DRIVER: file
+      CACHE_DRIVER: file
       DB_CONNECTION: pgsql
       DB_HOST: db
       DB_PORT: 5432
@@ -116,20 +118,18 @@ services:
     ports:
       - "8080:80"
 
-  rust_legacy:
+  pascal_legacy:
     build:
-      context: ./services/rust-legacy
-    container_name: rust_legacy
+      context: ./services/pascal-legacy
+    container_name: pascal_legacy
     environment:
       CSV_OUT_DIR: /data/csv
       GEN_PERIOD_SEC: ${LEGACY_PERIOD:-300}
-      DATABASE_URL: postgres://monouser:monopass@db:5432/monolith
       PGHOST: db
       PGPORT: 5432
       PGUSER: monouser
       PGPASSWORD: monopass
       PGDATABASE: monolith
-      RUST_LOG: ${RUST_LOG:-info}
     depends_on:
       db:
         condition: service_healthy
@@ -137,3 +137,26 @@ services:
       - csvdata:/data/csv
     networks:
       - backend
+
+  # Временно отключено из-за проблем с Docker Hub
+  # rust_legacy:
+  #   build:
+  #     context: ./services/rust-legacy
+  #   container_name: rust_legacy
+  #   environment:
+  #     CSV_OUT_DIR: /data/csv
+  #     GEN_PERIOD_SEC: ${LEGACY_PERIOD:-300}
+  #     DATABASE_URL: postgres://monouser:monopass@db:5432/monolith
+  #     PGHOST: db
+  #     PGPORT: 5432
+  #     PGUSER: monouser
+  #     PGPASSWORD: monopass
+  #     PGDATABASE: monolith
+  #     RUST_LOG: ${RUST_LOG:-info}
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #   volumes:
+  #     - csvdata:/data/csv
+  #   networks:
+  #     - backend
