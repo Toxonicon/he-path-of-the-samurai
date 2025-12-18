@@ -40,43 +40,68 @@
     </div>
   </div>
 
-  <div class="row g-4">
-    {{-- левая колонка: JWST наблюдение --}}
-    <div class="col-lg-7 fade-in">
-      <div class="glass-card p-4 h-100">
-        <div class="section-header">
-          <span class="section-icon">🔭</span>
-          <h5 class="section-title">JWST — Телескоп Джеймса Уэбба</h5>
-        </div>
-        <div class="text-muted">Данные от космического телескопа нового поколения</div>
-      </div>
-    </div>
-
-    {{-- правая колонка: карта МКС --}}
-    <div class="col-lg-5 fade-in-delay-1">
-      <div class="glass-card p-4 h-100">
-        <div class="section-header">
-          <span class="section-icon">🛰️</span>
+  <div class="row g-4 mb-4">
+    {{-- карта МКС на всю ширину --}}
+    <div class="col-12 fade-in">
+      <div class="glass-card p-4">
+        <div class="section-header mb-3">
+          <span class="section-icon">�️</span>
           <h5 class="section-title">МКС — Положение и движение</h5>
         </div>
-        <div id="map" class="mb-3"></div>
+        <div id="map" class="mb-3" style="height: 450px;"></div>
         <div class="row g-2">
-          <div class="col-6">
-            <div class="chart-container">
-              <canvas id="issSpeedChart" height="110"></canvas>
+          <div class="col-md-6">
+            <div class="chart-container" style="height: 180px;">
+              <canvas id="issSpeedChart"></canvas>
             </div>
           </div>
-          <div class="col-6">
-            <div class="chart-container">
-              <canvas id="issAltChart" height="110"></canvas>
+          <div class="col-md-6">
+            <div class="chart-container" style="height: 180px;">
+              <canvas id="issAltChart"></canvas>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    {{-- JWST данные --}}
+    <div class="col-lg-5 fade-in-delay-1">
+      <div class="glass-card p-4 h-100">
+        <div class="section-header mb-3">
+          <span class="section-icon">�</span>
+          <h5 class="section-title">JWST — Телескоп Джеймса Уэбба</h5>
+        </div>
+        <div class="mb-3">
+          <h6 class="text-muted mb-2">Текущие наблюдения</h6>
+          <div id="jwstCurrentObservation" class="small">
+            <div class="mb-2">
+              <strong>Цель:</strong> <span id="jwst-target">Загрузка...</span>
+            </div>
+            <div class="mb-2">
+              <strong>Инструмент:</strong> <span id="jwst-instrument">—</span>
+            </div>
+            <div class="mb-2">
+              <strong>Категория:</strong> <span id="jwst-category">—</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h6 class="text-muted mb-2">О телескопе</h6>
+          <ul class="list-unstyled small">
+            <li class="mb-2">🌌 <strong>Запуск:</strong> 25 декабря 2021</li>
+            <li class="mb-2">🔬 <strong>Диаметр зеркала:</strong> 6.5 метров</li>
+            <li class="mb-2">🌡️ <strong>Температура:</strong> -233°C</li>
+            <li class="mb-2">📡 <strong>Орбита:</strong> Точка Лагранжа L2</li>
+            <li class="mb-2">🎯 <strong>Расстояние:</strong> 1.5 млн км от Земли</li>
+          </ul>
         </div>
       </div>
     </div>
 
     {{-- JWST Галерея --}}
-    <div class="col-12 fade-in-delay-2">
+    <div class="col-lg-7 fade-in-delay-2">
       <div class="glass-card p-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
           <div class="section-header mb-0">
@@ -93,43 +118,17 @@
               <option>FGS</option>
             </select>
             <button class="btn btn-sm btn-primary" onclick="jwstGallery.load()">
-              <span class="spinner" style="display:none"></span>
+              <span class="spinner" id="jwstSpinner" style="display:none"></span>
               ↻ Обновить
             </button>
           </div>
         </div>
-
-          <!-- Skeleton loaders -->
-          <div id="jwst-skeletons" class="jwst-gallery">
-            @for($i = 0; $i < 12; $i++)
-              <div class="skeleton skeleton-image"></div>
-            @endfor
+        
+        <div id="jwstGallery" class="row g-3">
+          <div class="col-12 text-center text-muted py-5">
+            <div class="spinner-lg mx-auto mb-3"></div>
+            <p>Загрузка изображений...</p>
           </div>
-
-          <!-- Галерея -->
-          <div id="jwst-gallery" class="jwst-gallery"></div>
-
-          <!-- Load More button -->
-          <div class="text-center mt-3">
-            <button class="btn btn-outline-secondary" onclick="jwstGallery.nextPage()">
-              Загрузить ещё
-            </button>
-          </div>
-            }
-            .jwst-item{flex:0 0 180px; scroll-snap-align:start}
-            .jwst-item img{width:100%; height:180px; object-fit:cover; border-radius:.5rem}
-            .jwst-cap{font-size:.85rem; margin-top:.25rem}
-            .jwst-nav{position:absolute; top:40%; transform:translateY(-50%); z-index:2}
-            .jwst-prev{left:-.25rem} .jwst-next{right:-.25rem}
-          </style>
-
-          <div class="jwst-slider">
-            <button class="btn btn-light border jwst-nav jwst-prev" type="button" aria-label="Prev">‹</button>
-            <div id="jwstTrack" class="jwst-track border rounded"></div>
-            <button class="btn btn-light border jwst-nav jwst-next" type="button" aria-label="Next">›</button>
-          </div>
-
-          <div id="jwstInfo" class="small text-muted mt-2"></div>
         </div>
       </div>
     </div>
@@ -137,98 +136,80 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', async function () {
-  // ====== карта и графики МКС (как раньше) ======
-  if (typeof L !== 'undefined' && typeof Chart !== 'undefined') {
-    const last = @json(($iss['payload'] ?? []));
-    let lat0 = Number(last.latitude || 0), lon0 = Number(last.longitude || 0);
-    const map = L.map('map', { attributionControl:false }).setView([lat0||0, lon0||0], lat0?3:2);
-    L.tileLayer('https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png', { noWrap:true }).addTo(map);
-    const trail  = L.polyline([], {weight:3}).addTo(map);
-    const marker = L.marker([lat0||0, lon0||0]).addTo(map).bindPopup('МКС');
-
-    const speedChart = new Chart(document.getElementById('issSpeedChart'), {
-      type: 'line', data: { labels: [], datasets: [{ label: 'Скорость', data: [] }] },
-      options: { responsive: true, scales: { x: { display: false } } }
-    });
-    const altChart = new Chart(document.getElementById('issAltChart'), {
-      type: 'line', data: { labels: [], datasets: [{ label: 'Высота', data: [] }] },
-      options: { responsive: true, scales: { x: { display: false } } }
-    });
-
-    async function loadTrend() {
-      try {
-        const r = await fetch('/api/iss/trend?limit=240');
-        const js = await r.json();
-        const pts = Array.isArray(js.points) ? js.points.map(p => [p.lat, p.lon]) : [];
-        if (pts.length) {
-          trail.setLatLngs(pts);
-          marker.setLatLng(pts[pts.length-1]);
-        }
-        const t = (js.points||[]).map(p => new Date(p.at).toLocaleTimeString());
-        speedChart.data.labels = t;
-        speedChart.data.datasets[0].data = (js.points||[]).map(p => p.velocity);
-        speedChart.update();
-        altChart.data.labels = t;
-        altChart.data.datasets[0].data = (js.points||[]).map(p => p.altitude);
-        altChart.update();
-      } catch(e) {}
-    }
-    loadTrend();
-    setInterval(loadTrend, 15000);
-  }
-
-  // ====== JWST ГАЛЕРЕЯ ======
-  const track = document.getElementById('jwstTrack');
-  const info  = document.getElementById('jwstInfo');
-  const form  = document.getElementById('jwstFilter');
-  const srcSel = document.getElementById('srcSel');
-  const sfxInp = document.getElementById('suffixInp');
-  const progInp= document.getElementById('progInp');
-
-  function toggleInputs(){
-    sfxInp.style.display  = (srcSel.value==='suffix')  ? '' : 'none';
-    progInp.style.display = (srcSel.value==='program') ? '' : 'none';
-  }
-  srcSel.addEventListener('change', toggleInputs); toggleInputs();
-
-  async function loadFeed(qs){
-    track.innerHTML = '<div class="p-3 text-muted">Загрузка…</div>';
-    info.textContent= '';
-    try{
-      const url = '/api/jwst/feed?'+new URLSearchParams(qs).toString();
-      const r = await fetch(url);
-      const js = await r.json();
-      track.innerHTML = '';
-      (js.items||[]).forEach(it=>{
-        const fig = document.createElement('figure');
-        fig.className = 'jwst-item m-0';
-        fig.innerHTML = `
-          <a href="${it.link||it.url}" target="_blank" rel="noreferrer">
-            <img loading="lazy" src="${it.url}" alt="JWST">
-          </a>
-          <figcaption class="jwst-cap">${(it.caption||'').replaceAll('<','&lt;')}</figcaption>`;
-        track.appendChild(fig);
-      });
-      info.textContent = `Источник: ${js.source} · Показано ${js.count||0}`;
-    }catch(e){
-      track.innerHTML = '<div class="p-3 text-danger">Ошибка загрузки</div>';
+// JWST Gallery
+const jwstGallery = {
+  images: [],
+  
+  async load() {
+    const spinner = document.getElementById('jwstSpinner');
+    const gallery = document.getElementById('jwstGallery');
+    const filter = document.getElementById('instrumentFilter').value;
+    
+    if (spinner) spinner.style.display = 'inline-block';
+    gallery.innerHTML = '<div class="col-12 text-center py-4"><div class="spinner-lg mx-auto"></div></div>';
+    
+    try {
+      const response = await fetch('/api/jwst/feed');
+      const data = await response.json();
+      
+      this.images = data.items || [];
+      
+      if (this.images.length === 0) {
+        gallery.innerHTML = '<div class="col-12 text-center text-muted py-4">Нет изображений</div>';
+        return;
+      }
+      
+      // Обновляем текущие наблюдения
+      const firstImage = this.images[0];
+      if (firstImage) {
+        document.getElementById('jwst-target').textContent = firstImage.title || 'Неизвестно';
+        document.getElementById('jwst-instrument').textContent = firstImage.instrument || '—';
+        document.getElementById('jwst-category').textContent = firstImage.category || '—';
+      }
+      
+      // Фильтруем по инструменту
+      let filtered = this.images;
+      if (filter) {
+        filtered = this.images.filter(img => img.instrument === filter);
+      }
+      
+      // Ограничиваем до 12 изображений
+      filtered = filtered.slice(0, 12);
+      
+      // Рендерим галерею
+      gallery.innerHTML = filtered.map(img => `
+        <div class="col-md-4 col-lg-3">
+          <div class="jwst-item">
+            <img src="${img.thumbnail || img.url}" 
+                 alt="${img.title || 'JWST Image'}" 
+                 class="img-fluid rounded"
+                 loading="lazy"
+                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22%3E%3Crect fill=%22%23667eea%22 width=%22300%22 height=%22300%22/%3E%3Ctext fill=%22white%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2218%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+            <div class="jwst-caption">
+              <div class="small fw-bold">${img.title || 'Untitled'}</div>
+              <div class="small text-muted">${img.instrument || '—'}</div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      
+    } catch (error) {
+      console.error('JWST load error:', error);
+      gallery.innerHTML = '<div class="col-12 text-center text-danger py-4">⚠️ Ошибка загрузки изображений</div>';
+    } finally {
+      if (spinner) spinner.style.display = 'none';
     }
   }
+};
 
-  form.addEventListener('submit', function(ev){
-    ev.preventDefault();
-    const fd = new FormData(form);
-    const q = Object.fromEntries(fd.entries());
-    loadFeed(q);
+// Загрузка при старте
+document.addEventListener('DOMContentLoaded', () => {
+  jwstGallery.load();
+  
+  // Обработчик фильтра
+  document.getElementById('instrumentFilter')?.addEventListener('change', () => {
+    jwstGallery.load();
   });
-
-  // навигация
-  document.querySelector('.jwst-prev').addEventListener('click', ()=> track.scrollBy({left:-600, behavior:'smooth'}));
-  document.querySelector('.jwst-next').addEventListener('click', ()=> track.scrollBy({left: 600, behavior:'smooth'}));
-
-  // стартовые данные
-  loadFeed({source:'jpg', perPage:24});
 });
 </script>
 @endsection

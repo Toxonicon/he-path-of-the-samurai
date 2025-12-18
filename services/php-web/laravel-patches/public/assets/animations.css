@@ -413,3 +413,40 @@ html {
 .stagger-item:nth-child(4) { animation-delay: 0.2s; }
 .stagger-item:nth-child(5) { animation-delay: 0.25s; }
 .stagger-item:nth-child(6) { animation-delay: 0.3s; }
+
+/* JWST Item Styles */
+.jwst-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.jwst-item:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 16px 48px rgba(102, 126, 234, 0.3);
+    border-color: rgba(102, 126, 234, 0.5);
+}
+
+.jwst-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.jwst-item:hover img {
+    transform: scale(1.1);
+}
+
+.jwst-caption {
+    padding: 0.75rem;
+    background: rgba(15, 12, 41, 0.9);
+    backdrop-filter: blur(10px);
+}
+
+.jwst-caption .small {
+    line-height: 1.4;
+}
