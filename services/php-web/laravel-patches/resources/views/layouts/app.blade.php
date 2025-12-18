@@ -45,6 +45,9 @@
           <li class="nav-item">
             <a class="nav-link {{ Request::is('osdr*') ? 'active' : '' }}" href="/osdr">OSDR Data</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link {{ Request::is('astronomy*') ? 'active' : '' }}" href="/astronomy">Astronomy Events</a>
+          </li>
         </ul>
       </div>
     </div>

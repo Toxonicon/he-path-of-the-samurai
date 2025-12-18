@@ -14,6 +14,7 @@ Route::get('/', fn() => redirect('/dashboard'));
 Route::get('/dashboard', [DashboardController::class, 'index']);
 Route::get('/osdr', [OsdrController::class, 'index']);
 Route::get('/iss', [IssController::class, 'index'])->name('iss');
+Route::get('/astronomy', fn() => view('astronomy'))->name('astronomy');
 
 // API для ISS данных
 Route::prefix('api/iss')->group(function() {
@@ -34,6 +35,7 @@ Route::get('/api/jwst/feed', [DashboardController::class, 'jwstFeed']);
 
 // Астрономические события
 Route::get('/api/astro/events', [AstroController::class, 'events']);
+Route::get('/api/astronomy-events', [AstroController::class, 'events']);
 
 // CMS страницы
 Route::get('/page/{slug}', [CmsController::class, 'page']);
