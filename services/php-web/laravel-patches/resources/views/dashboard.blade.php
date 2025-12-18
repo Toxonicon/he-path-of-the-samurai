@@ -3,74 +3,72 @@
 @section('content')
 <div class="container pb-5">
   {{-- верхние карточки метрик --}}
-  <div class="row g-3 mb-3">
+  <div class="row g-3 mb-4">
     <div class="col-6 col-md-3 fade-in">
-      <div class="card card-animated shadow-sm h-100">
-        <div class="card-body text-center">
-          <div class="small text-muted mb-1">Скорость МКС</div>
-          <div class="fs-3 fw-bold metric-value" data-metric="velocity" data-value="{{ $metrics['velocity'] ?? 0 }}">
-            {{ isset($metrics['velocity']) ? number_format($metrics['velocity'], 0, '', ' ') : '—' }}
-          </div>
-          <div class="small text-muted">км/ч</div>
+      <div class="metric-card metric-velocity">
+        <div class="metric-label">Скорость МКС</div>
+        <div class="metric-number metric-value" data-metric="velocity" data-value="{{ $metrics['velocity'] ?? 0 }}">
+          {{ isset($metrics['velocity']) ? number_format($metrics['velocity'], 0, '', ' ') : '—' }}
         </div>
+        <div class="metric-unit">км/ч</div>
       </div>
     </div>
     <div class="col-6 col-md-3 fade-in-delay-1">
-      <div class="card card-animated shadow-sm h-100">
-        <div class="card-body text-center">
-          <div class="small text-muted mb-1">Высота МКС</div>
-          <div class="fs-3 fw-bold metric-value" data-metric="altitude" data-value="{{ $metrics['altitude'] ?? 0 }}">
-            {{ isset($metrics['altitude']) ? number_format($metrics['altitude'], 0, '', ' ') : '—' }}
-          </div>
-          <div class="small text-muted">км</div>
+      <div class="metric-card metric-altitude">
+        <div class="metric-label">Высота МКС</div>
+        <div class="metric-number metric-value" data-metric="altitude" data-value="{{ $metrics['altitude'] ?? 0 }}">
+          {{ isset($metrics['altitude']) ? number_format($metrics['altitude'], 0, '', ' ') : '—' }}
         </div>
+        <div class="metric-unit">км</div>
       </div>
     </div>
     <div class="col-6 col-md-3 fade-in-delay-2">
-      <div class="card card-animated shadow-sm h-100">
-        <div class="card-body text-center">
-          <div class="small text-muted mb-1">Широта</div>
-          <div class="fs-4 fw-bold" data-metric="latitude">{{ isset($metrics['latitude']) ? number_format($metrics['latitude'], 2) : '—' }}°</div>
+      <div class="metric-card metric-coordinates">
+        <div class="metric-label">Широта</div>
+        <div class="metric-number metric-value" data-metric="latitude">
+          {{ isset($metrics['latitude']) ? number_format($metrics['latitude'], 2) : '—' }}°
         </div>
       </div>
     </div>
     <div class="col-6 col-md-3 fade-in-delay-3">
-      <div class="card card-animated shadow-sm h-100">
-        <div class="card-body text-center">
-          <div class="small text-muted mb-1">Долгота</div>
-          <div class="fs-4 fw-bold" data-metric="longitude">{{ isset($metrics['longitude']) ? number_format($metrics['longitude'], 2) : '—' }}°</div>
+      <div class="metric-card metric-coordinates">
+        <div class="metric-label">Долгота</div>
+        <div class="metric-number metric-value" data-metric="longitude">
+          {{ isset($metrics['longitude']) ? number_format($metrics['longitude'], 2) : '—' }}°
         </div>
       </div>
     </div>
   </div>
 
-  <div class="row g-3">
+  <div class="row g-4">
     {{-- левая колонка: JWST наблюдение --}}
     <div class="col-lg-7 fade-in">
-      <div class="card shadow-sm h-100">
-        <div class="card-body">
-          <h5 class="card-title">🔭 JWST — Текущее наблюдение</h5>
-          <div class="text-muted">Данные телескопа James Webb Space Telescope</div>
+      <div class="glass-card p-4 h-100">
+        <div class="section-header">
+          <span class="section-icon">🔭</span>
+          <h5 class="section-title">JWST — Телескоп Джеймса Уэбба</h5>
         </div>
+        <div class="text-muted">Данные от космического телескопа нового поколения</div>
       </div>
     </div>
 
     {{-- правая колонка: карта МКС --}}
     <div class="col-lg-5 fade-in-delay-1">
-      <div class="card shadow-sm h-100">
-        <div class="card-body">
-          <h5 class="card-title">🛰️ МКС — Положение и движение</h5>
-          <div id="map" class="rounded mb-2 border" style="height:300px"></div>
-          <div class="row g-2">
-            <div class="col-6">
-              <div class="chart-container">
-                <canvas id="issSpeedChart" height="110"></canvas>
-              </div>
+      <div class="glass-card p-4 h-100">
+        <div class="section-header">
+          <span class="section-icon">🛰️</span>
+          <h5 class="section-title">МКС — Положение и движение</h5>
+        </div>
+        <div id="map" class="mb-3"></div>
+        <div class="row g-2">
+          <div class="col-6">
+            <div class="chart-container">
+              <canvas id="issSpeedChart" height="110"></canvas>
             </div>
-            <div class="col-6">
-              <div class="chart-container">
-                <canvas id="issAltChart" height="110"></canvas>
-              </div>
+          </div>
+          <div class="col-6">
+            <div class="chart-container">
+              <canvas id="issAltChart" height="110"></canvas>
             </div>
           </div>
         </div>
@@ -79,25 +77,27 @@
 
     {{-- JWST Галерея --}}
     <div class="col-12 fade-in-delay-2">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="card-title m-0">🌌 JWST — Галерея изображений</h5>
-            <div class="d-flex gap-2 flex-wrap">
-              <select class="form-select form-select-sm" id="instrumentFilter" style="width:140px">
-                <option value="">Все инструменты</option>
-                <option>NIRCam</option>
-                <option>MIRI</option>
-                <option>NIRISS</option>
-                <option>NIRSpec</option>
-                <option>FGS</option>
-              </select>
-              <button class="btn btn-sm btn-outline-primary" onclick="jwstGallery.load()">
-                <span class="spinner" style="display:none"></span>
-                Обновить
-              </button>
-            </div>
+      <div class="glass-card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="section-header mb-0">
+            <span class="section-icon">🌌</span>
+            <h5 class="section-title">JWST — Галерея космоса</h5>
           </div>
+          <div class="d-flex gap-2 flex-wrap">
+            <select class="form-select form-select-sm" id="instrumentFilter" style="width:150px">
+              <option value="">Все инструменты</option>
+              <option>NIRCam</option>
+              <option>MIRI</option>
+              <option>NIRISS</option>
+              <option>NIRSpec</option>
+              <option>FGS</option>
+            </select>
+            <button class="btn btn-sm btn-primary" onclick="jwstGallery.load()">
+              <span class="spinner" style="display:none"></span>
+              ↻ Обновить
+            </button>
+          </div>
+        </div>
 
           <!-- Skeleton loaders -->
           <div id="jwst-skeletons" class="jwst-gallery">
