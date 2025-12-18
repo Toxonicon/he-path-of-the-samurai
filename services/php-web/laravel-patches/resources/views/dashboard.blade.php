@@ -8,7 +8,7 @@
       <div class="card card-animated shadow-sm h-100">
         <div class="card-body text-center">
           <div class="small text-muted mb-1">Скорость МКС</div>
-          <div class="fs-3 fw-bold metric-value" data-value="{{ $metrics['velocity'] ?? 0 }}">
+          <div class="fs-3 fw-bold metric-value" data-metric="velocity" data-value="{{ $metrics['velocity'] ?? 0 }}">
             {{ isset($metrics['velocity']) ? number_format($metrics['velocity'], 0, '', ' ') : '—' }}
           </div>
           <div class="small text-muted">км/ч</div>
@@ -19,7 +19,7 @@
       <div class="card card-animated shadow-sm h-100">
         <div class="card-body text-center">
           <div class="small text-muted mb-1">Высота МКС</div>
-          <div class="fs-3 fw-bold metric-value" data-value="{{ $metrics['altitude'] ?? 0 }}">
+          <div class="fs-3 fw-bold metric-value" data-metric="altitude" data-value="{{ $metrics['altitude'] ?? 0 }}">
             {{ isset($metrics['altitude']) ? number_format($metrics['altitude'], 0, '', ' ') : '—' }}
           </div>
           <div class="small text-muted">км</div>
@@ -30,7 +30,7 @@
       <div class="card card-animated shadow-sm h-100">
         <div class="card-body text-center">
           <div class="small text-muted mb-1">Широта</div>
-          <div class="fs-4 fw-bold">{{ isset($metrics['latitude']) ? number_format($metrics['latitude'], 2) : '—' }}°</div>
+          <div class="fs-4 fw-bold" data-metric="latitude">{{ isset($metrics['latitude']) ? number_format($metrics['latitude'], 2) : '—' }}°</div>
         </div>
       </div>
     </div>
@@ -38,7 +38,7 @@
       <div class="card card-animated shadow-sm h-100">
         <div class="card-body text-center">
           <div class="small text-muted mb-1">Долгота</div>
-          <div class="fs-4 fw-bold">{{ isset($metrics['longitude']) ? number_format($metrics['longitude'], 2) : '—' }}°</div>
+          <div class="fs-4 fw-bold" data-metric="longitude">{{ isset($metrics['longitude']) ? number_format($metrics['longitude'], 2) : '—' }}°</div>
         </div>
       </div>
     </div>
