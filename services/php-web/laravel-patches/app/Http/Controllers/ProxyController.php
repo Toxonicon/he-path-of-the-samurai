@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Response;
+use App\Http\Requests\IssRangeRequest;
 
 class ProxyController extends Controller
 {
@@ -15,6 +16,12 @@ class ProxyController extends Controller
     public function trend() {
         $q = request()->getQueryString();
         return $this->pipe('/iss/trend' . ($q ? '?' . $q : ''));
+    }
+
+    public function range(IssRangeRequest $request) {
+        $validated = $request->validated();
+        $q = http_build_query($validated);
+        return $this->pipe('/iss/range' . ($q ? '?' . $q : ''));
     }
 
     private function pipe(string $path)

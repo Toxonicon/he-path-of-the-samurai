@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\OsdrListRequest;
 
 class OsdrController extends Controller
 {
@@ -21,6 +22,18 @@ class OsdrController extends Controller
             'items' => $items,
             'src'   => $base.'/osdr/list?limit='.$limit,
         ]);
+    }
+
+    public function list(OsdrListRequest $request)
+    {
+        $validated = $request->validated();
+        $base = getenv('RUST_BASE') ?: 'http://rust_iss:3000';
+        $query = http_build_query($validated);
+        
+        $json = @file_get_contents($base . '/osdr/list' . ($query ? '?' . $query : ''));
+        $data = $json ? json_decode($json, true) : ['items' => []];
+        
+        return response()->json($data);
     }
 
     /** Преобразует данные вида {"OSD-1": {...}, "OSD-2": {...}} в плоский список */

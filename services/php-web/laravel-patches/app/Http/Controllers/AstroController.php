@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\AstronomyEventsRequest;
 
 class AstroController extends Controller
 {
     public function events(Request $r)
     {
+        // Валидация для прямых запросов без FormRequest
         $lat  = (float) $r->query('lat', 55.7558);
         $lon  = (float) $r->query('lon', 37.6176);
         $days = max(1, min(30, (int) $r->query('days', 7)));
@@ -18,41 +20,49 @@ class AstroController extends Controller
         $appId  = env('ASTRO_APP_ID', '');
         $secret = env('ASTRO_APP_SECRET', '');
         
-        // Если credentials не настроены, возвращаем mock данные
-        if (empty($appId) || empty($secret) || $appId === 'your-app-id-here') {
+        // Если credentials не настроены или demo, возвращаем mock данные
+        if (empty($appId) || empty($secret) || 
+            $appId === 'your-app-id-here' || 
+            $appId === 'demo-app-id' || 
+            $secret === 'demo-secret') {
+            
             return response()->json([
                 'data' => [
                     'table' => [
                         'header' => ['Body', 'Position', 'Date', 'Extra'],
                         'rows' => [
                             [
-                                'entry' => [
-                                    'id' => '1',
-                                    'name' => 'Moon',
-                                ],
+                                'entry' => ['id' => '1', 'name' => 'Moon'],
                                 'cells' => [
-                                    ['id' => 'body', 'name' => 'Луна', 'value' => ['string' => 'Луна']],
-                                    ['id' => 'position', 'name' => 'Восход', 'value' => ['string' => 'Восход']],
-                                    ['id' => 'date', 'name' => now()->format('Y-m-d H:i'), 'value' => ['string' => now()->format('Y-m-d H:i')]],
-                                    ['id' => 'extra', 'name' => 'Азимут: 45°', 'value' => ['string' => 'Азимут: 45°']],
+                                    ['id' => 'body', 'value' => ['string' => 'Луна']],
+                                    ['id' => 'position', 'value' => ['string' => 'Восход']],
+                                    ['id' => 'date', 'value' => ['string' => now()->addHours(2)->format('Y-m-d H:i')]],
+                                    ['id' => 'extra', 'value' => ['string' => 'Азимут: 95°, Высота: 12°']],
                                 ],
                             ],
                             [
-                                'entry' => [
-                                    'id' => '2',
-                                    'name' => 'Sun',
-                                ],
+                                'entry' => ['id' => '2', 'name' => 'Sun'],
                                 'cells' => [
-                                    ['id' => 'body', 'name' => 'Солнце', 'value' => ['string' => 'Солнце']],
-                                    ['id' => 'position', 'name' => 'Заход', 'value' => ['string' => 'Заход']],
-                                    ['id' => 'date', 'name' => now()->addHours(5)->format('Y-m-d H:i'), 'value' => ['string' => now()->addHours(5)->format('Y-m-d H:i')]],
-                                    ['id' => 'extra', 'name' => 'Азимут: 280°', 'value' => ['string' => 'Азимут: 280°']],
+                                    ['id' => 'body', 'value' => ['string' => 'Солнце']],
+                                    ['id' => 'position', 'value' => ['string' => 'Заход']],
+                                    ['id' => 'date', 'value' => ['string' => now()->addHours(5)->format('Y-m-d H:i')]],
+                                    ['id' => 'extra', 'value' => ['string' => 'Азимут: 245°, Высота: 2°']],
+                                ],
+                            ],
+                            [
+                                'entry' => ['id' => '3', 'name' => 'Mars'],
+                                'cells' => [
+                                    ['id' => 'body', 'value' => ['string' => 'Марс']],
+                                    ['id' => 'position', 'value' => ['string' => 'Кульминация']],
+                                    ['id' => 'date', 'value' => ['string' => now()->addHours(8)->format('Y-m-d H:i')]],
+                                    ['id' => 'extra', 'value' => ['string' => 'Азимут: 180°, Высота: 45°']],
                                 ],
                             ],
                         ],
                     ],
                 ],
-                'message' => 'Demo data. Set ASTRO_APP_ID and ASTRO_APP_SECRET in .env to get real data from AstronomyAPI.com'
+                'demo' => true,
+                'message' => '🎭 Demo данные. Для реальных данных настройте ASTRO_APP_ID и ASTRO_APP_SECRET. См. ASTRONOMY_QUICKSTART.md'
             ]);
         }
 
@@ -64,6 +74,7 @@ class AstroController extends Controller
         $params = [
             'latitude' => $lat,
             'longitude' => $lon,
+            'elevation' => 0,  // ОБЯЗАТЕЛЬНЫЙ параметр!
             'from_date' => $from,
             'to_date' => $to,
             'time' => '12:00:00',
