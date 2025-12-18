@@ -86,10 +86,37 @@ const astronomyUI = {
     tbody.innerHTML = '<tr><td colspan="5" class="text-center"><div class="spinner-lg mx-auto"></div></td></tr>';
 
     try {
-      const response = await fetch('/api/astronomy-events');
+      const response = await fetch('/api/astronomy-events?lat=55.7558&lon=37.6176&days=7');
       const data = await response.json();
       
-      this.events = data.events || [];
+      // Проверяем разные форматы ответа
+      if (data.error) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-warning">⚠️ ${data.message || data.error}</td></tr>`;
+        return;
+      }
+      
+      // Парсим данные из таблицы AstronomyAPI
+      this.events = [];
+      
+      if (data.data && data.data.table && data.data.table.rows) {
+        data.data.table.rows.forEach((row, index) => {
+          const cells = row.cells || [];
+          const event = {
+            id: index + 1,
+            body: cells.find(c => c.id === 'body')?.value?.string || cells[0]?.value?.string || 'Unknown',
+            event: cells.find(c => c.id === 'position')?.value?.string || cells[1]?.value?.string || '—',
+            when_utc: cells.find(c => c.id === 'date')?.value?.string || cells[2]?.value?.string || '—',
+            extra: cells.find(c => c.id === 'extra')?.value?.string || cells[3]?.value?.string || ''
+          };
+          this.events.push(event);
+        });
+      }
+      
+      if (this.events.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">Нет событий для отображения. Настройте ASTRO_APP_ID и ASTRO_APP_SECRET в .env</td></tr>';
+        return;
+      }
+      
       this.updateStats();
       this.populateFilters();
       this.applyFilters();
@@ -149,14 +176,13 @@ const astronomyUI = {
     }
 
     tbody.innerHTML = this.filteredEvents.map((event, index) => {
-      const extra = event.extra ? JSON.stringify(event.extra) : '—';
       return `
         <tr class="fade-in" style="animation-delay: ${index * 0.02}s">
-          <td>${index + 1}</td>
-          <td><strong>${event.body || 'Unknown'}</strong></td>
-          <td>${event.event || '—'}</td>
-          <td>${event.when_utc || '—'}</td>
-          <td class="small text-muted">${extra}</td>
+          <td>${event.id}</td>
+          <td><strong>${event.body}</strong></td>
+          <td>${event.event}</td>
+          <td>${event.when_utc}</td>
+          <td class="small text-muted">${event.extra}</td>
         </tr>
       `;
     }).join('');
