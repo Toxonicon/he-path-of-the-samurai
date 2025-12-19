@@ -41,5 +41,5 @@ uuid = { version = "1.6", features = ["v4", "v5", "serde"] }
 # Tower middleware
 tower = "0.4"
 tower-http = { version = "0.5", features = ["cors", "trace"] }
-tower-governor = "0.3"
+tower_governor = "0.3"
 
