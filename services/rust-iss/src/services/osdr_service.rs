@@ -5,6 +5,7 @@ use crate::{
 };
 use serde_json::Value;
 use chrono::{DateTime, NaiveDateTime, TimeZone, Utc};
+use uuid::Uuid;
 
 /// Сервис для работы с данными OSDR
 pub struct OsdrService {
@@ -50,7 +51,19 @@ impl OsdrService {
 
         let mut written = 0usize;
         for item in items {
-            let dataset_id = extract_string(&item, &["dataset_id", "id", "uuid", "studyId", "accession", "osdr_id"]);
+            let orig_dataset_id = extract_string(&item, &["dataset_id", "id", "uuid", "studyId", "accession", "osdr_id"]);
+            // Если dataset_id отсутствует — сгенерируем детерминированный fallback
+            // из JSON-представления записи (UUID v5 на основе содержимого).
+            // Это позволяет избежать множества NULL-записей и дубликатов при последующих sync.
+            let dataset_id = match orig_dataset_id {
+                Some(s) => Some(s),
+                None => {
+                    // Используем стабильную генерацию: UUIDv5(namespace OID, raw_json)
+                    let raw_text = item.to_string();
+                    let generated = format!("gen-{}", Uuid::new_v5(&Uuid::NAMESPACE_OID, raw_text.as_bytes()));
+                    Some(generated)
+                }
+            };
             let title = extract_string(&item, &["title", "name", "label"]);
             let status = extract_string(&item, &["status", "state", "lifecycle"]);
             let updated_at = extract_timestamp(&item, &["updated", "updated_at", "modified", "lastUpdated", "timestamp"]);
