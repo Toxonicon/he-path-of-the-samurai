@@ -1,5 +1,24 @@
 # 🔧 Troubleshooting - Решение проблем
 
+## Проблема: Cargo error "no matching package found: tower-governor"
+
+### Симптомы:
+```
+error: no matching package found
+searched package name: tower-governor
+perhaps you meant:      tower_governor
+```
+
+### Решение:
+Эта проблема уже исправлена в commit `d131d6e`. Обновите код:
+
+```powershell
+git pull origin master
+docker-compose up -d --build
+```
+
+---
+
 ## Проблема: Docker build error "Cargo.lock not found"
 
 ### Симптомы:
