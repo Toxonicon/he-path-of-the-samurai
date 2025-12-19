@@ -1,5 +1,28 @@
 # 🔧 Troubleshooting - Решение проблем
 
+## Проблема: Cargo error "feature edition2024 is required"
+
+### Симптомы:
+```
+error: failed to download replaced source registry crates-io
+Caused by:
+  feature edition2024 is required
+  The package requires the Cargo feature called edition2024, but that feature is not 
+  stabilized in this version of Cargo (1.75.0).
+```
+
+### Решение:
+Эта проблема уже исправлена в commit `382b527`. Обновите код:
+
+```powershell
+git pull origin master
+docker-compose up -d --build
+```
+
+Rust обновлён с версии 1.75 до 1.83.
+
+---
+
 ## Проблема: Cargo error "no matching package found: tower-governor"
 
 ### Симптомы:
