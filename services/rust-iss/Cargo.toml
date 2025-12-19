@@ -43,3 +43,8 @@ tower = "0.4"
 tower-http = { version = "0.5", features = ["cors", "trace"] }
 tower_governor = "0.3"
 
+# Pin dependencies to avoid edition2024 requirement
+[patch.crates-io]
+base64ct = { version = "=1.6.0" }
+home = { version = "=0.5.9" }
+
